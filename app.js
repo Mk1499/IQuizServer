@@ -9,6 +9,7 @@ import env from 'dotenv';
 import DurationRouter from './routes/duration.js';
 import CategoryRouter from './routes/category.js';
 import quizRouter from './routes/quiz.js';
+import helmet from 'helmet';
 
 const app = express();
 
@@ -16,10 +17,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 env.config();
 app.use(cors());
+app.use(helmet());
 mongoose.connect(process.env.DBConnect);
 
 mongoose.connection.once('open', () => {
   console.log('connected to Database');
+});
+
+app.get('/', (req, res) => {
+  res.send('Welcome To IQuiz Server');
 });
 
 app.use('/answer', AnswersRouter);
@@ -33,16 +39,16 @@ const options = {
   cert: fs.readFileSync('./config/server.cert'),
 };
 
-const port = process.env.PORT || 8080;
-
-app.get('/', (req, res) => {
-  res.send('ssss');
-});
+const port = process.env.PORT || 9000;
 
 app.post('/', (req, res) => {
   res.send(req.body);
 });
 
-https.createServer(options, app).listen(port, () => {
-  console.log(`HTTPS server started on port : `, port);
+// https.createServer(options, app).listen(port, () => {
+//   console.log(`HTTPS server started on port : `, port);
+// });
+
+app.listen(port, () => {
+  console.log(' server starts on port : ', port);
 });
