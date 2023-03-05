@@ -5,7 +5,10 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema(
   {
     label: String,
-    type: String,
+    type: {
+      type: String,
+      default: 'choose',
+    },
     answers: [
       {
         type: mongoose.Types.ObjectId,
@@ -16,6 +19,7 @@ const questionSchema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: 'Answer',
     },
+    points: Number,
   },
   {
     timestamps: true,

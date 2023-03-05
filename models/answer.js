@@ -5,7 +5,10 @@ const Schema = mongoose.Schema;
 const answerSchema = new Schema(
   {
     label: String,
-    type: String
+    type: {
+      type: String,
+      default: 'choose',
+    },
   },
   {
     timestamps: true,
