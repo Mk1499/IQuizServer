@@ -6,7 +6,7 @@ const categorySchema = new Schema(
   {
     arName: String,
     enName: String,
-    coverURL: String,
+    cover: String,
     description: String,
   },
   {
