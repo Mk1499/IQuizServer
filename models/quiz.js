@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const quizSchema = new Schema(
   {
-    title: String,
+    name: String,
     description: String,
     lang: { type: String, default: 'ar' },
     noOfQuestions: { type: Number, default: 0 },
@@ -28,7 +28,7 @@ const quizSchema = new Schema(
       type: Number,
       default: 0,
     },
-    startData: { type: Date, default: new Date() },
+    startData: { type: Date, default: Date.now() },
     endData: Date,
     code: String,
   },

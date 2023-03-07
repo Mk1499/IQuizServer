@@ -22,12 +22,11 @@ quizRouter.get('/', (req, res) => {
 });
 
 quizRouter.post('/add', (req, res) => {
-  const { title, duration, category, lang, description, startDate, endDate } =
+  const { name, duration, category, lang, description, startDate, endDate } =
     req.body;
   let code = uuid.generate();
-
-  const quiz = new Quiz({
-    title,
+  const body = {
+    name,
     duration,
     category,
     lang,
@@ -35,13 +34,18 @@ quizRouter.post('/add', (req, res) => {
     code,
     startDate,
     endDate,
-  });
+    questions: [],
+  };
+  //   console.log('Body : ', body);
+
+  const quiz = new Quiz(body);
   quiz
     .save()
     .then((q) => {
       res.status(200).json(q);
     })
     .catch((err) => {
+      console.log('Err : ', err);
       res.status(400).send(err);
     });
 });

@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const durationSchema = new Schema(
   {
-    label: String,
+    arName: String,
+    enName: String,
     value: Number,
   },
   {
