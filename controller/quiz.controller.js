@@ -40,3 +40,16 @@ export async function getQuizPreData(req, res) {
     durations,
   });
 }
+
+export async function deleteQuiz(req, res) {
+  const id = req.params.id;
+  Quiz.deleteOne({ _id: id })
+    .then(() => {
+      res.status(200).send({
+        message: 'Quiz Deleted',
+      });
+    })
+    .catch((err) => {
+      res.status(404).send(err);
+    });
+}

@@ -4,6 +4,7 @@ import Question from '../models/question.js';
 import Answer from '../models/answer.js';
 import {
   addQuestionToQuiz,
+  deleteQuiz,
   getQuizPreData,
 } from '../controller/quiz.controller.js';
 
@@ -12,7 +13,8 @@ import uuid from 'short-uuid';
 const quizRouter = express.Router();
 
 quizRouter.get('/', (req, res) => {
-  Quiz.find({})
+  let lang = req.headers.lang;
+  Quiz.find({ lang })
     .then((data) => {
       res.status(200).send(data);
     })
@@ -71,6 +73,10 @@ quizRouter.post('/addNewQuestion', async (req, res) => {
   });
 });
 
+quizRouter.delete('/:id', (req, res) => {
+  deleteQuiz(req, res);
+});
+
 quizRouter.get('/predata', (req, res) => {
   getQuizPreData(req, res);
 });
@@ -84,10 +90,15 @@ quizRouter.get('/:id', (req, res) => {
       populate: 'answers',
     })
     .then((data) => {
-      res.status(200).send(data);
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(404).send({ message: 'Quiz not fount' });
+      }
     })
     .catch((err) => {
       res.status(400).send(err);
     });
 });
+
 export default quizRouter;
