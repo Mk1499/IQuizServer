@@ -10,6 +10,7 @@ import DurationRouter from './routes/duration.js';
 import CategoryRouter from './routes/category.js';
 import quizRouter from './routes/quiz.js';
 import helmet from 'helmet';
+import userRouter from './routes/user.js';
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/question', QuestionRouter);
 app.use('/duration', DurationRouter);
 app.use('/category', CategoryRouter);
 app.use('/quiz', quizRouter);
+app.use('/user', userRouter);
 
 const options = {
   key: fs.readFileSync('./config/server.key'),

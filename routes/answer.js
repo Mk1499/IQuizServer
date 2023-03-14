@@ -1,5 +1,6 @@
 import express from 'express';
 import Answer from '../models/answer.js';
+import { authorization } from '../middlewares/user.js';
 
 const answerRouter = express.Router();
 
@@ -14,7 +15,7 @@ answerRouter.post('/add', (req, res) => {
     });
 });
 
-answerRouter.get('/', (req, res) => {
+answerRouter.get('/', authorization, (req, res) => {
   Answer.find({})
     .then((answers) => {
       res.status(200).json(answers);
