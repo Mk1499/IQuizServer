@@ -41,7 +41,7 @@ userRouter.post('/register', verifyEmail, (req, res) => {
 });
 
 userRouter.post('/login', verifyEmail, (req, res) => {
-  const { email, password, socialID } = req.body;
+  const { email, password, socialID, name, photo } = req.body;
   if (password) {
     User.findOne(
       {
@@ -77,9 +77,23 @@ userRouter.post('/login', verifyEmail, (req, res) => {
           const token = signingData(data);
           res.status(200).json(token);
         } else {
-          res.status(404).json({
-            message: ErrorMessages.noUser,
+          let user = new User({
+            name,
+            photo,
+            email,
+            socialID,
           });
+          user
+            .save()
+            .then((userData) => {
+              let securedData = userData;
+              delete securedData['password'];
+              const token = signingData(securedData);
+              res.status(200).json(token);
+            })
+            .catch((err) => {
+              doublicatedKeyRegister(err, res);
+            });
         }
       })
       .catch((err) => {

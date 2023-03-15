@@ -19,7 +19,7 @@ export const doublicatedKeyRegister = (err, res) => {
         throw 'Not Counted';
       }
     } catch (error) {
-      console.log('SSS : ', error);
+      console.log(error);
       res.status(400).send(err);
     }
   }
