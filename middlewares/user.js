@@ -10,7 +10,7 @@ export const verifyEmail = (req, res, next) => {
     next();
   } else {
     res.status(400).send({
-      message: 'Not a valid email',
+      message: ErrorMessages.inValidEmail,
     });
   }
 };

@@ -14,7 +14,6 @@ const userSchema = new Schema(
     password: String,
     socialID: {
       type: String,
-      unique: true,
     },
     code: String,
     points: {

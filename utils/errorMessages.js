@@ -5,6 +5,8 @@ const codes = {
   noUser: 'NoUser',
   notValidToken: 'notValidToken',
   noPassOrSocialID: 'noPassOrSocialID',
+  inValidEmail: 'inValidEmail',
+  wrongCode: 'wrongeCode',
 };
 
 export default codes;
