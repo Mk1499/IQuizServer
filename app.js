@@ -21,7 +21,7 @@ app.use(cors());
 app.use(helmet());
 mongoose.connect(process.env.DBConnect);
 
-mongoose.connection.once('open', () => {
+mongoose.connection.once('open', async () => {
   console.log('connected to Database');
 });
 
