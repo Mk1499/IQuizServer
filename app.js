@@ -11,6 +11,7 @@ import CategoryRouter from './routes/category.js';
 import quizRouter from './routes/quiz.js';
 import helmet from 'helmet';
 import userRouter from './routes/user.js';
+import emailValidator from 'deep-email-validator';
 
 const app = express();
 
@@ -23,6 +24,9 @@ mongoose.connect(process.env.DBConnect);
 
 mongoose.connection.once('open', async () => {
   console.log('connected to Database');
+
+  const validation = await emailValidator.validate('m.khaled1499@gmail.com');
+  console.log('Validation : ', validation);
 });
 
 app.get('/', (req, res) => {
