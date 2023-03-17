@@ -26,7 +26,10 @@ export async function sendEmail(email, code) {
     text: 'That was easy!',
     html: htmlTemp(code),
   };
-  const validation = await emailValidator.validate(email);
+  const validation = await emailValidator.validate({
+    email,
+    validateSMTP: false,
+  });
   console.log('Validation : ', validation);
   if (validation?.valid) {
     transporter.sendMail(mailOptions, function (error, info) {
