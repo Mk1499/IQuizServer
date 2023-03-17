@@ -166,9 +166,8 @@ userRouter.post('/forgotPassword', (req, res) => {
   const email = req.body?.email;
   User.findOne({ email })
     .then((userData) => {
-      console.log(('user : ', userData.code));
       if (userData) {
-        // sendEmail(email, userData.code);
+        sendEmail(email, userData.code);
       }
       res.status(200).json({ message: 'Code Sent' });
     })
