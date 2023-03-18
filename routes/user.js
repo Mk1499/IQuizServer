@@ -44,75 +44,117 @@ userRouter.post('/register', verifyEmail, (req, res) => {
 });
 
 userRouter.post('/login', verifyEmail, (req, res) => {
-  const { email, password, socialID, name, photo } = req.body;
+  const { email, password } = req.body;
 
-  if (password) {
-    User.findOne(
-      {
-        email,
-        password,
-      },
-      { email: 1, photo: 1, name: 1, points: 1, role: 1, verified: 1 }
-    )
-      .then((data) => {
-        if (data) {
-          const token = signingData(data);
-          if (!data.verified) {
-            sendEmail(email, data?.code);
-          }
+  User.findOne(
+    {
+      email,
+      password,
+    },
+    { email: 1, photo: 1, name: 1, points: 1, role: 1, verified: 1 }
+  )
+    .then((data) => {
+      if (data) {
+        const token = signingData(data);
+        if (!data.verified) {
+          sendEmail(email, data?.code);
+        }
 
-          res.status(200).json(token);
-        } else {
-          res.status(404).json({
-            message: ErrorMessages.noUser,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(('E : ', err));
-        res.status(400).json(err);
-      });
-  } else if (socialID) {
-    User.findOne(
-      {
-        email,
-        socialID,
-      },
-      { email: 1, photo: 1, name: 1, points: 1, role: 1 }
-    )
-      .then((data) => {
-        if (data) {
-          const token = signingData(data);
-          res.status(200).json(token);
-        } else {
-          let user = new User({
-            name,
-            photo,
-            email,
-            socialID,
-          });
-          user
-            .save()
-            .then((userData) => {
-              let securedData = userData;
-              delete securedData['password'];
-              const token = signingData(securedData);
-              res.status(200).json(token);
-            })
-            .catch((err) => {
-              doublicatedKeyRegister(err, res);
-            });
-        }
-      })
-      .catch((err) => {
-        console.log(('E : ', err));
-        res.status(400).json(err);
-      });
-  } else {
-    res.status(404).json({
-      message: ErrorMessages.noPassOrSocialID,
+        res.status(200).json(token);
+      } else {
+        res.status(404).json({
+          message: ErrorMessages.noUser,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(('E : ', err));
+      res.status(400).json(err);
     });
+});
+
+userRouter.post('/googleLogin', verifyEmail, async (req, res) => {
+  const { email, socialID, name, photo } = req.body;
+  try {
+    const socialUser = await User.findOne(
+      { email, socialID },
+      { email: 1, photo: 1, name: 1, points: 1, role: 1 }
+    );
+    if (socialUser) {
+      const token = signingData(socialUser);
+      res.status(200).json(token);
+    } else {
+      const prevUserWithEmail = await User.findOne(
+        { email },
+        { email: 1, photo: 1, name: 1, points: 1, role: 1 }
+      );
+      if (prevUserWithEmail) {
+        const userUpdated = await User.updateOne(
+          { email },
+          {
+            $set: {
+              socialID,
+            },
+          }
+        );
+        const token = signingData(prevUserWithEmail);
+        res.status(200).json(token);
+      } else {
+        let user = new User({
+          name,
+          photo,
+          email,
+          socialID,
+        });
+        const newUser = await user.save();
+        const token = signingData(prevUserWithEmail);
+        res.status(200).json(token);
+      }
+    }
+  } catch (err) {
+    res.status(400).send(err);
   }
+
+  // User.findOne(
+  //   {
+  //     email,
+  //     socialID,
+  //   },
+  //   { email: 1, photo: 1, name: 1, points: 1, role: 1 }
+  // )
+  //   .then((data) => {
+  //     if (data) {
+  //       const token = signingData(data);
+  //       res.status(200).json(token);
+  //     } else {
+  //       let prevUser = await User.findOne({ email });
+  //       if (prevUser) {
+  //         User.updateOne({ email }, { $set: { socialID } });
+  //       }
+
+  // let user = new User({
+  //   name,
+  //   photo,
+  //   email,
+  //   socialID,
+  // });
+  //       user
+  //         .save()
+  //         .then((userData) => {
+  //           let securedData = userData;
+  //           delete securedData['password'];
+  //           const token = signingData(securedData);
+  //           res.status(200).json(token);
+  //         })
+  //         .catch((err) => {
+  //           doublicatedKeyRegister(err, res);
+  //         });
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log(('E : ', err));
+  //     res.status(400).json(err);
+  //   });
 });
 
 userRouter.get('/resendCode', authorization, (req, res) => {
