@@ -81,6 +81,26 @@ quizRouter.get('/predata', (req, res) => {
   getQuizPreData(req, res);
 });
 
+quizRouter.get('/join/:code', (req, res) => {
+  const code = req.params.code;
+  Quiz.findOne({ code })
+    .populate('duration category questions')
+    .populate({
+      path: 'questions',
+      populate: 'answers',
+    })
+    .then((data) => {
+      if (data) {
+        res.status(200).send(data);
+      } else {
+        res.status(404).send({ message: 'Quiz not fount' });
+      }
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+});
+
 quizRouter.get('/:id', (req, res) => {
   const id = req.params.id;
   Quiz.findById(id)

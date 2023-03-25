@@ -28,6 +28,7 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    rank: Number,
   },
   {
     timestamps: true,

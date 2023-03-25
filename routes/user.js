@@ -2,7 +2,7 @@ import express from 'express';
 import User from '../models/user.js';
 import { authorization, verifyEmail } from '../middlewares/user.js';
 import { doublicatedKeyRegister } from '../utils/errorHandling.js';
-import { signingData } from '../utils/encryption.js';
+import { signingData, verifyToken } from '../utils/encryption.js';
 import ErrorMessages from '../utils/errorMessages.js';
 import { codeGeneration } from '../utils/generate.js';
 import { sendEmail } from '../utils/sendEmail.js';
@@ -248,6 +248,25 @@ userRouter.post('/resetPassword', authorization, (req, res) => {
   )
     .then(() => {
       res.status(200).json({ message: 'passwordUpdated' });
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+});
+
+userRouter.put('/update', authorization, (req, res) => {
+  const { name, photo } = req.body;
+  const token = req.headers.authorization;
+  const user = verifyToken(token);
+  User.findByIdAndUpdate(
+    { _id: user._id },
+    { $set: { name, photo } },
+    { new: true }
+  )
+    .then((data) => {
+      const token = signingData(data);
+
+      res.status(200).json({ message: 'userUpdated', token });
     })
     .catch((err) => {
       res.status(400).send(err);
