@@ -5,6 +5,7 @@ import Duration from '../models/duration.js';
 
 export async function addQuestionToQuiz(questionID, quizID, req, res) {
   const question = await Question.findById(questionID);
+  console.log('QID : ', quizID);
   Quiz.findOneAndUpdate(
     {
       _id: quizID,

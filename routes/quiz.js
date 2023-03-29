@@ -24,8 +24,16 @@ quizRouter.get('/', (req, res) => {
 });
 
 quizRouter.post('/add', (req, res) => {
-  const { name, duration, category, lang, description, startDate, endDate } =
-    req.body;
+  const {
+    name,
+    duration,
+    category,
+    lang,
+    description,
+    startDate,
+    endDate,
+    cover,
+  } = req.body;
   let code = uuid.generate();
   const body = {
     name,
@@ -37,6 +45,7 @@ quizRouter.post('/add', (req, res) => {
     startDate,
     endDate,
     questions: [],
+    cover,
   };
   //   console.log('Body : ', body);
 
@@ -68,9 +77,15 @@ quizRouter.post('/addNewQuestion', async (req, res) => {
     answers: ansIDs,
     rightAnswer: rightAnswerID,
   });
-  question.save().then((q) => {
-    addQuestionToQuiz(q._id, quizID, req, res);
-  });
+  question
+    .save()
+    .then((q) => {
+      console.log('id : ', q._id);
+      addQuestionToQuiz(q._id, quizID, req, res);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
 });
 
 quizRouter.delete('/:id', (req, res) => {
