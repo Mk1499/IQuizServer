@@ -1,28 +1,15 @@
 import express from 'express';
-import Answer from '../models/answer.js';
 import { authorization } from '../middlewares/user.js';
+import { addAnswer, listAnswers } from '../controller/answer.controller.js';
 
 const answerRouter = express.Router();
 
 answerRouter.post('/add', (req, res) => {
-  const a = new Answer(req.body);
-  a.save()
-    .then((ans) => {
-      res.status(200).json(ans);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-    });
+  addAnswer(req, res);
 });
 
 answerRouter.get('/', authorization, (req, res) => {
-  Answer.find({})
-    .then((answers) => {
-      res.status(200).json(answers);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
-    });
+  listAnswers(req, res);
 });
 
 export default answerRouter;
