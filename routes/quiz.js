@@ -3,66 +3,31 @@ import Quiz from '../models/quiz.js';
 import Question from '../models/question.js';
 import Answer from '../models/answer.js';
 import {
+  addNewQuestion,
   addQuestionToQuiz,
+  addQuiz,
   deleteQuiz,
+  getQuizMetaData,
   getQuizPreData,
+  joinByCode,
+  listQuizzes,
 } from '../controller/quiz.controller.js';
 
 import uuid from 'short-uuid';
 import { adminAuthorization, authorization } from '../middlewares/user.js';
 import { verifyToken } from '../utils/encryption.js';
 import Submit from '../models/submit.js';
+import TakenQuiz from '../models/takenQuiz.js';
 import ErrorMessages from '../utils/errorMessages.js';
 
 const quizRouter = express.Router();
 
 quizRouter.get('/', (req, res) => {
-  let lang = req.headers.lang;
-  Quiz.find({ lang })
-    .then((data) => {
-      res.status(200).send(data);
-    })
-    .catch((err) => {
-      res.status(400).send(err);
-    });
+  listQuizzes(req, res);
 });
 
 quizRouter.post('/add', (req, res) => {
-  const {
-    name,
-    duration,
-    category,
-    lang,
-    description,
-    startDate,
-    endDate,
-    cover,
-  } = req.body;
-  let code = uuid.generate();
-  const body = {
-    name,
-    duration,
-    category,
-    lang,
-    description,
-    code,
-    startDate,
-    endDate,
-    questions: [],
-    cover,
-  };
-  //   console.log('Body : ', body);
-
-  const quiz = new Quiz(body);
-  quiz
-    .save()
-    .then((q) => {
-      res.status(200).json(q);
-    })
-    .catch((err) => {
-      console.log('Err : ', err);
-      res.status(400).send(err);
-    });
+  addQuiz(req, res);
 });
 
 quizRouter.post('/addQuestion', async (req, res) => {
@@ -71,25 +36,7 @@ quizRouter.post('/addQuestion', async (req, res) => {
 });
 
 quizRouter.post('/addNewQuestion', async (req, res) => {
-  const { quizID, label, answers, rightAnswer, points } = req.body;
-  const ans = await Answer.insertMany(answers);
-  const ansIDs = ans.map((a) => a._id);
-  const rightAnswerID = ans.find((a) => a.label === rightAnswer)?._id;
-  const question = new Question({
-    label,
-    points,
-    answers: ansIDs,
-    rightAnswer: rightAnswerID,
-  });
-  question
-    .save()
-    .then((q) => {
-      console.log('id : ', q._id);
-      addQuestionToQuiz(q._id, quizID, req, res);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+  addNewQuestion(req, res);
 });
 
 quizRouter.delete('/:id', (req, res) => {
@@ -101,45 +48,17 @@ quizRouter.get('/predata', (req, res) => {
 });
 
 quizRouter.get('/join/:code', (req, res) => {
-  const code = req.params.code;
-  Quiz.findOne({ code })
-    .populate('duration category questions')
-    .populate({
-      path: 'questions',
-      populate: 'answers',
-    })
-    .then((data) => {
-      if (data) {
-        res.status(200).send(data);
-      } else {
-        res.status(404).send({ message: 'Quiz not fount' });
-      }
-    })
-    .catch((err) => {
-      res.status(400).send(err);
-    });
+  joinByCode(req, res);
 });
 quizRouter.get('/metadata/:id', (req, res) => {
-  const id = req.params.id;
-  Quiz.findById(id, { questions: 0 })
-    .populate('duration category')
-    .then((data) => {
-      if (data) {
-        res.status(200).send(data);
-      } else {
-        res.status(404).send({ message: 'Quiz not fount' });
-      }
-    })
-    .catch((err) => {
-      res.status(400).send(err);
-    });
+  getQuizMetaData(req, res);
 });
 
 quizRouter.get('/questions/:id', authorization, async (req, res) => {
   const token = req.headers.authorization;
   const userData = verifyToken(token);
   const id = req.params.id;
-  const prevSubmit = await Submit.findOne({
+  const prevSubmit = await TakenQuiz.findOne({
     user: userData?._id,
     quiz: id,
   });
@@ -147,6 +66,10 @@ quizRouter.get('/questions/:id', authorization, async (req, res) => {
   if (prevSubmit) {
     res.status(400).json({ message: ErrorMessages.prevSubmitted });
   } else {
+    const takeRecord = new TakenQuiz({
+      user: userData?._id,
+      quiz: id,
+    }).save();
     Quiz.findById(id)
       .populate({
         path: 'questions',
