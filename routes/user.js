@@ -1,6 +1,10 @@
 import express from 'express';
 import User from '../models/user.js';
-import { authorization, verifyEmail } from '../middlewares/user.js';
+import {
+  adminAuthorization,
+  authorization,
+  verifyEmail,
+} from '../middlewares/user.js';
 import { doublicatedKeyRegister } from '../utils/errorHandling.js';
 import { signingData, verifyToken } from '../utils/encryption.js';
 import ErrorMessages from '../utils/errorMessages.js';
@@ -271,6 +275,11 @@ userRouter.put('/update', authorization, (req, res) => {
     .catch((err) => {
       res.status(400).send(err);
     });
+});
+
+userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {
+  const users = await User.find();
+  res.status(200).json(users);
 });
 
 export default userRouter;

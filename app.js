@@ -12,6 +12,7 @@ import quizRouter from './routes/quiz.js';
 import helmet from 'helmet';
 import userRouter from './routes/user.js';
 import feedbackRouter from './routes/feedback.js';
+import submitRouter from './routes/submit.js';
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/category', CategoryRouter);
 app.use('/quiz', quizRouter);
 app.use('/user', userRouter);
 app.use('/feedback', feedbackRouter);
+app.use('/submit', submitRouter);
 
 const options = {
   key: fs.readFileSync('./config/server.key'),

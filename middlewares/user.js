@@ -28,3 +28,17 @@ export const authorization = (req, res, next) => {
     }
   }
 };
+
+export const adminAuthorization = (req, res, next) => {
+  const token = req?.headers?.authorization;
+  if (!token) {
+    res.status(400).send({ message: ErrorMessages.notAuthorized });
+  } else {
+    let data = verifyToken(token);
+    if (data && data.role === 'admin') {
+      next();
+    } else {
+      res.status(400).send({ message: ErrorMessages.mustBeAdmin });
+    }
+  }
+};

@@ -7,6 +7,8 @@ const codes = {
   noPassOrSocialID: 'noPassOrSocialID',
   inValidEmail: 'inValidEmail',
   wrongCode: 'wrongeCode',
+  mustBeAdmin: 'mustBeAdmin',
+  prevSubmitted: 'prevSubmitted',
 };
 
 export default codes;

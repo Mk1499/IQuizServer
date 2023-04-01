@@ -29,6 +29,10 @@ const userSchema = new Schema(
       default: false,
     },
     rank: Number,
+    submissions: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
