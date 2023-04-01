@@ -146,24 +146,24 @@ quizRouter.get('/questions/:id', authorization, async (req, res) => {
 
   if (prevSubmit) {
     res.status(400).json({ message: ErrorMessages.prevSubmitted });
+  } else {
+    Quiz.findById(id)
+      .populate({
+        path: 'questions',
+        select: '-rightAnswer',
+        populate: 'answers',
+      })
+      .then((data) => {
+        if (data) {
+          res.status(200).send(data);
+        } else {
+          res.status(404).send({ message: 'Quiz not fount' });
+        }
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
   }
-
-  Quiz.findById(id)
-    .populate({
-      path: 'questions',
-      select: '-rightAnswer',
-      populate: 'answers',
-    })
-    .then((data) => {
-      if (data) {
-        res.status(200).send(data);
-      } else {
-        res.status(404).send({ message: 'Quiz not fount' });
-      }
-    })
-    .catch((err) => {
-      res.status(400).send(err);
-    });
 });
 
 quizRouter.get('/:id', adminAuthorization, (req, res) => {

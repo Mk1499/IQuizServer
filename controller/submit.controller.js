@@ -27,8 +27,8 @@ export async function addNewSubmit(userID, quizID, submittion, score, time) {
     answer: s.answerID,
   }));
   const newSubmittion = new Submit({
-    userID,
-    quizID,
+    user: userID,
+    quiz: quizID,
     submit,
     score,
     time,
