@@ -29,6 +29,21 @@ export const authorization = (req, res, next) => {
   }
 };
 
+export const isMine = (req, res, next) => {
+  const token = req?.headers?.authorization;
+  const id = req?.params?.id;
+  if (!token) {
+    res.status(400).send({ message: ErrorMessages.notAuthorized });
+  } else {
+    let data = verifyToken(token);
+    if (data && data._id === id) {
+      next();
+    } else {
+      res.status(400).send({ message: ErrorMessages.accessOtherUserData });
+    }
+  }
+};
+
 export const adminAuthorization = (req, res, next) => {
   const token = req?.headers?.authorization;
   if (!token) {

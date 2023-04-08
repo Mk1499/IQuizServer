@@ -3,6 +3,7 @@ import User from '../models/user.js';
 import {
   adminAuthorization,
   authorization,
+  isMine,
   verifyEmail,
 } from '../middlewares/user.js';
 import { doublicatedKeyRegister } from '../utils/errorHandling.js';
@@ -275,6 +276,17 @@ userRouter.put('/update', authorization, (req, res) => {
     .catch((err) => {
       res.status(400).send(err);
     });
+});
+
+userRouter.get('/sync/:id', isMine, async (req, res) => {
+  const id = req.params?.id;
+  const data = await User.findById(id);
+  if (data) {
+    let token = signingData(data);
+    res.status(200).json(token);
+  } else {
+    res.status(400).json({ message: ErrorMessages.noUser });
+  }
 });
 
 userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {

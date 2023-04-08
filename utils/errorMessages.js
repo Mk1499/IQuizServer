@@ -9,6 +9,7 @@ const codes = {
   wrongCode: 'wrongeCode',
   mustBeAdmin: 'mustBeAdmin',
   prevSubmitted: 'prevSubmitted',
+  accessOtherUserData: 'accessOtherUserData',
 };
 
 export default codes;
