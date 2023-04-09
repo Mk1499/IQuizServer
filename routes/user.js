@@ -83,7 +83,16 @@ userRouter.post('/googleLogin', verifyEmail, async (req, res) => {
   try {
     const socialUser = await User.findOne(
       { email, socialID },
-      { email: 1, photo: 1, name: 1, points: 1, role: 1 }
+      {
+        email: 1,
+        photo: 1,
+        name: 1,
+        points: 1,
+        role: 1,
+        rank: 1,
+        submissions: 1,
+        verified: 1,
+      }
     );
     if (socialUser) {
       const token = signingData(socialUser);
