@@ -11,15 +11,27 @@ const submitRouter = express.Router();
 submitRouter.post('/add', authorization, async (req, res) => {
   const { userID, quizID, submit, time } = req.body;
   const score = await computeScore(quizID, submit);
-  await User.findByIdAndUpdate(userID, { $inc: { points: score } })
-    .then(async () => {
-      updateRanks();
-      await addNewSubmit(userID, quizID, submit, score, time);
-      res.status(200).json(score);
-    })
-    .catch((err) => {
-      res.status(500).json(err);
-    });
+  const quiz = await Quiz.findById(quizID);
+  if (quiz.status === 'Public') {
+    await User.findByIdAndUpdate(userID, { $inc: { points: score } })
+      .then(async () => {
+        updateRanks();
+
+        await addNewSubmit(userID, quizID, submit, score, time);
+        res.status(200).json(score);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  } else {
+    addNewSubmit(userID, quizID, submit, score, time)
+      .then(() => {
+        res.status(200).json(score);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  }
 });
 
 submitRouter.get('/list', adminAuthorization, async (req, res) => {

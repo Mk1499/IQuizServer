@@ -6,7 +6,7 @@ export async function getCategoryQuizzes(req, res) {
   const lang = req.headers.lang;
   Quiz.find({
     category,
-    lang,
+    // lang,
   })
     .populate('duration')
     .then((data) => {

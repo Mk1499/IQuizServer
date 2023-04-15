@@ -26,7 +26,7 @@ quizRouter.get('/', (req, res) => {
   listQuizzes(req, res);
 });
 
-quizRouter.post('/add', (req, res) => {
+quizRouter.post('/add', authorization, (req, res) => {
   addQuiz(req, res);
 });
 

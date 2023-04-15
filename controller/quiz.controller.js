@@ -4,6 +4,7 @@ import Category from '../models/category.js';
 import Duration from '../models/duration.js';
 import Answer from '../models/answer.js';
 import uuid from 'short-uuid';
+import { verifyToken } from '../utils/encryption.js';
 
 export async function addQuestionToQuiz(questionID, quizID, req, res) {
   const question = await Question.findById(questionID);
@@ -25,12 +26,14 @@ export async function addQuestionToQuiz(questionID, quizID, req, res) {
   )
     .then((data) => {
       if (data) {
+        console.log('Q Data : ', data);
         res.status(200).json(data);
       } else {
         res.status(400).json({ message: 'question already added ' });
       }
     })
     .catch((err) => {
+      console.log('add Q err : ', err);
       res.status(400).send(err);
     });
 }
@@ -116,6 +119,9 @@ export async function addNewQuestion(req, res) {
 }
 
 export async function addQuiz(req, res) {
+  const token = req?.headers?.authorization;
+  const userData = verifyToken(token);
+
   const {
     name,
     duration,
@@ -125,6 +131,7 @@ export async function addQuiz(req, res) {
     startDate,
     endDate,
     cover,
+    status,
   } = req.body;
   let code = uuid.generate();
   const body = {
@@ -138,19 +145,28 @@ export async function addQuiz(req, res) {
     endDate,
     questions: [],
     cover,
+    status,
+    user: userData?._id,
   };
   //   console.log('Body : ', body);
 
   const quiz = new Quiz(body);
-  quiz
-    .save()
-    .then((q) => {
-      res.status(200).json(q);
-    })
-    .catch((err) => {
-      console.log('Err : ', err);
+  quiz.save((err, q) => {
+    if (err) {
+      console.log('mongo save err : ', err);
       res.status(400).send(err);
-    });
+    } else {
+      res.status(200).json(q);
+    }
+  });
+  // .then((q) => {
+  //   console.log('Q : ', q);
+  //   // res.status(200).json(q);
+  // })
+  // .catch((err) => {
+  //   console.log('Err : ', err);
+  //   res.status(400).send(err);
+  // });
 }
 
 export async function listQuizzes(req, res) {

@@ -31,6 +31,14 @@ const quizSchema = new Schema(
     startDate: { type: Date, default: Date.now() },
     endDate: Date,
     code: String,
+    status: {
+      type: String,
+      default: 'Private',
+    },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
