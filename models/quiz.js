@@ -28,7 +28,7 @@ const quizSchema = new Schema(
       type: Number,
       default: 0,
     },
-    startDate: { type: Date, default: Date.now() },
+    startDate: Date,
     endDate: Date,
     code: String,
     status: {
