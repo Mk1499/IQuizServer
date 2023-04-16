@@ -91,6 +91,21 @@ quizRouter.get('/questions/:id', authorization, async (req, res) => {
   // }
 });
 
+quizRouter.post('/quizLandMaker', adminAuthorization, (req, res) => {
+  quizLandMaker(req, res);
+});
+
+// quizRouter.get('/freeDummy', adminAuthorization, (req, res) => {
+// const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
+// Answer.deleteMany({ createdAt: { $gte: threeHoursAgo } })
+//   .then((data) => {
+//     res.json({ message: 'Deleted', data });
+//   })
+//   .catch((err) => {
+//     res.send(err);
+//   });
+// });
+
 quizRouter.get('/:id', adminAuthorization, (req, res) => {
   const id = req.params.id;
   Quiz.findById(id)
@@ -109,10 +124,6 @@ quizRouter.get('/:id', adminAuthorization, (req, res) => {
     .catch((err) => {
       res.status(400).send(err);
     });
-});
-
-quizRouter.post('/quizLandMaker', adminAuthorization, (req, res) => {
-  quizLandMaker(req, res);
 });
 
 export default quizRouter;

@@ -1,4 +1,9 @@
 import express from 'express';
+import {
+  listInCompleteQuestions,
+  setRightAnswer,
+} from '../controller/question.controller.js';
+import { adminAuthorization } from '../middlewares/user.js';
 import Question from '../models/question.js';
 
 const questionRouter = express.Router();
@@ -34,6 +39,14 @@ questionRouter.post('/add', (req, res) => {
     .catch((err) => {
       res.status(400).json(err);
     });
+});
+
+questionRouter.get('/incomplete', adminAuthorization, (req, res) => {
+  listInCompleteQuestions(req, res);
+});
+
+questionRouter.post('/setRightAns', adminAuthorization, (req, res) => {
+  setRightAnswer(req, res);
 });
 
 export default questionRouter;
