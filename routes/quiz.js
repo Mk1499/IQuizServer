@@ -19,6 +19,7 @@ import { verifyToken } from '../utils/encryption.js';
 import Submit from '../models/submit.js';
 import TakenQuiz from '../models/takenQuiz.js';
 import ErrorMessages from '../utils/errorMessages.js';
+import { quizLandMaker } from '../controller/automation.controller.js';
 
 const quizRouter = express.Router();
 
@@ -108,6 +109,10 @@ quizRouter.get('/:id', adminAuthorization, (req, res) => {
     .catch((err) => {
       res.status(400).send(err);
     });
+});
+
+quizRouter.post('/quizLandMaker', adminAuthorization, (req, res) => {
+  quizLandMaker(req, res);
 });
 
 export default quizRouter;

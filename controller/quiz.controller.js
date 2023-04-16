@@ -5,6 +5,7 @@ import Duration from '../models/duration.js';
 import Answer from '../models/answer.js';
 import uuid from 'short-uuid';
 import { verifyToken } from '../utils/encryption.js';
+import axios from 'axios';
 
 export async function addQuestionToQuiz(questionID, quizID, req, res) {
   const question = await Question.findById(questionID);
