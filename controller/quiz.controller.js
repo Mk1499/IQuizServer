@@ -148,7 +148,7 @@ export async function addQuiz(req, res) {
     status,
     user: userData?._id,
   };
-  //   console.log('Body : ', body);
+  console.log('Body : ', body);
 
   const quiz = new Quiz(body);
   quiz.save((err, q) => {

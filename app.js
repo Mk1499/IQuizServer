@@ -47,9 +47,9 @@ const options = {
 
 const port = process.env.PORT || 9000;
 
-app.post('/', (req, res) => {
-  res.send(req.body);
-});
+// app.post('/', (req, res) => {
+//   res.send(req.body);
+// });
 
 // https.createServer(options, app).listen(port, () => {
 //   console.log(`HTTPS server started on port : `, port);

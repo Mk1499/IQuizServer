@@ -121,7 +121,7 @@ userRouter.post('/googleLogin', verifyEmail, async (req, res) => {
           socialID,
         });
         const newUser = await user.save();
-        const token = signingData(prevUserWithEmail);
+        const token = signingData(newUser);
         res.status(200).json(token);
       }
     }
