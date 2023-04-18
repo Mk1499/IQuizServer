@@ -36,3 +36,25 @@ export async function addNewSubmit(userID, quizID, submittion, score, time) {
   await Quiz.updateOne({ _id: quizID }, { $inc: { submissions: 1 } });
   await User.updateOne({ _id: userID }, { $inc: { submissions: 1 } });
 }
+
+export async function listUserSubmits(req, res) {
+  const userID = req.params.id;
+  console.log('U : ', userID);
+  Submit.find({
+    user: userID,
+  })
+    .sort({
+      createdAt: -1,
+    })
+    .populate('user quiz')
+    .populate({
+      path: 'submit',
+      populate: 'question answer',
+    })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}

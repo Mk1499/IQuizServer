@@ -1,7 +1,15 @@
 import express from 'express';
-import { addNewSubmit, computeScore } from '../controller/submit.controller.js';
+import {
+  addNewSubmit,
+  computeScore,
+  listUserSubmits,
+} from '../controller/submit.controller.js';
 import { updateRanks } from '../controller/user.controller.js';
-import { adminAuthorization, authorization } from '../middlewares/user.js';
+import {
+  adminAuthorization,
+  authorization,
+  isMine,
+} from '../middlewares/user.js';
 import Quiz from '../models/quiz.js';
 import Submit from '../models/submit.js';
 import User from '../models/user.js';
@@ -36,12 +44,22 @@ submitRouter.post('/add', authorization, async (req, res) => {
 
 submitRouter.get('/list', adminAuthorization, async (req, res) => {
   Submit.find({})
+    .sort({ createdAt: -1 })
+    .populate('user quiz')
+    .populate({
+      path: 'submit',
+      populate: 'answer question',
+    })
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => {
       res.status(500).send(err);
     });
+});
+
+submitRouter.get('/list/:id', isMine, (req, res) => {
+  listUserSubmits(req, res);
 });
 
 export default submitRouter;

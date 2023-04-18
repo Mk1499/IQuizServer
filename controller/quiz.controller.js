@@ -180,3 +180,20 @@ export async function listQuizzes(req, res) {
       res.status(400).send(err);
     });
 }
+
+export async function latestQuizzes(req, res) {
+  Quiz.find({
+    status: 'Public',
+  })
+    .populate('user duration')
+    .sort({
+      createdAt: -1,
+    })
+    .limit(4)
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+}

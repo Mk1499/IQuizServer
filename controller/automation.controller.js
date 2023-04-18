@@ -6,7 +6,16 @@ import uuid from 'short-uuid';
 import { verifyToken } from '../utils/encryption.js';
 
 export async function quizLandMaker(req, res) {
-  const { quizLandID, duration, category, lang } = req.body;
+  const {
+    quizLandID,
+    duration,
+    category,
+    lang,
+    startDate,
+    endDate,
+    cover,
+    status,
+  } = req.body;
   const quizLandMetaRes = await axios.get(
     `https://api.quizland.net/api/Quiz/${quizLandID}`
   );
@@ -35,10 +44,13 @@ export async function quizLandMaker(req, res) {
     code,
     questions: qIDs,
     noOfQuestions: qIDs?.length,
-    cover: `https://media.quizland.net/quiz/cover/${quizLandMeta.id}.jpg`,
-    status: 'Public',
+    cover:
+      cover || `https://media.quizland.net/quiz/cover/${quizLandMeta.id}.jpg`,
+    status: status || 'Public',
     user: userData?._id,
     points: allPoints,
+    startDate,
+    endDate,
   };
 
   const quiz = new Quiz(quizBody);

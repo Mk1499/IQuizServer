@@ -36,7 +36,7 @@ export const isMine = (req, res, next) => {
     res.status(400).send({ message: ErrorMessages.notAuthorized });
   } else {
     let data = verifyToken(token);
-    if (data && data._id === id) {
+    if (data && (data._id === id || data.role === 'admin')) {
       next();
     } else {
       res.status(400).send({ message: ErrorMessages.accessOtherUserData });
