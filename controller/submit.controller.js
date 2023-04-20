@@ -39,7 +39,6 @@ export async function addNewSubmit(userID, quizID, submittion, score, time) {
 
 export async function listUserSubmits(req, res) {
   const userID = req.params.id;
-  console.log('U : ', userID);
   Submit.find({
     user: userID,
   })
@@ -49,7 +48,11 @@ export async function listUserSubmits(req, res) {
     .populate('user quiz')
     .populate({
       path: 'submit',
-      populate: 'question answer',
+      populate: 'question',
+    })
+    .populate({
+      path: 'submit.question',
+      populate: 'answers',
     })
     .then((data) => {
       res.status(200).send(data);

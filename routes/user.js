@@ -12,6 +12,7 @@ import ErrorMessages from '../utils/errorMessages.js';
 import { codeGeneration } from '../utils/generate.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import Jwt from 'jsonwebtoken';
+import { setDeviceToken } from '../controller/user.controller.js';
 
 const userRouter = express.Router();
 
@@ -56,7 +57,16 @@ userRouter.post('/login', verifyEmail, (req, res) => {
       email,
       password,
     },
-    { email: 1, photo: 1, name: 1, points: 1, role: 1, verified: 1 }
+    {
+      email: 1,
+      photo: 1,
+      name: 1,
+      points: 1,
+      role: 1,
+      rank: 1,
+      submissions: 1,
+      verified: 1,
+    }
   )
     .then((data) => {
       if (data) {
@@ -301,6 +311,10 @@ userRouter.get('/sync/:id', isMine, async (req, res) => {
 userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {
   const users = await User.find().sort({ createdAt: -1 });
   res.status(200).json(users);
+});
+
+userRouter.post('/setDeviceToken', authorization, (req, res) => {
+  setDeviceToken(req, res);
 });
 
 export default userRouter;

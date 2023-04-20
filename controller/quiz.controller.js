@@ -9,7 +9,6 @@ import axios from 'axios';
 
 export async function addQuestionToQuiz(questionID, quizID, req, res) {
   const question = await Question.findById(questionID);
-  console.log('QID : ', quizID);
   Quiz.findOneAndUpdate(
     {
       _id: quizID,
@@ -27,7 +26,6 @@ export async function addQuestionToQuiz(questionID, quizID, req, res) {
   )
     .then((data) => {
       if (data) {
-        console.log('Q Data : ', data);
         res.status(200).json(data);
       } else {
         res.status(400).json({ message: 'question already added ' });

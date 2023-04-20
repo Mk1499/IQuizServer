@@ -34,7 +34,6 @@ export async function quizLandMaker(req, res) {
   }));
 
   const { qIDs, allPoints } = await addManyQuestions(questions);
-  console.log('P : ', allPoints);
   const quizBody = {
     name: quizLandMeta.title,
     duration,
