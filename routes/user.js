@@ -308,15 +308,10 @@ userRouter.get('/sync/:id', isMine, async (req, res) => {
   }
 });
 
-userRouter.get(
-  '/listRank',
-  authorization,
-  adminAuthorization,
-  async (req, res) => {
-    const users = await User.find().sort({ rank: 1 });
-    res.status(200).json(users);
-  }
-);
+userRouter.get('/listRank', authorization, async (req, res) => {
+  const users = await User.find().sort({ rank: 1 });
+  res.status(200).json(users);
+});
 userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {
   const users = await User.find().sort({ createdAt: -1 });
   res.status(200).json(users);
