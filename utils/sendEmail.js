@@ -30,7 +30,7 @@ export async function sendEmail(email, code) {
     email,
     validateSMTP: false,
   });
-  console.log('Validation : ', validation);
+  // console.log('Validation : ', validation);
   if (validation?.valid) {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {

@@ -16,10 +16,11 @@ import { setDeviceToken } from '../controller/user.controller.js';
 
 const userRouter = express.Router();
 
-userRouter.post('/register', verifyEmail, (req, res) => {
+userRouter.post('/register', verifyEmail, async (req, res) => {
   const { name, email, photo, password, socialID } = req.body;
   const code = codeGeneration();
   if (password || socialID) {
+    const userCounts = await User.countDocuments();
     const user = new User({
       name,
       email,
@@ -27,6 +28,7 @@ userRouter.post('/register', verifyEmail, (req, res) => {
       password,
       socialID,
       code,
+      rank: userCounts + 1,
     });
 
     user
@@ -34,7 +36,7 @@ userRouter.post('/register', verifyEmail, (req, res) => {
       .then((data) => {
         let securedData = data;
         delete securedData['password'];
-        sendEmail(email, code);
+        // sendEmail(email, code);
         const token = signingData(securedData);
         res.status(200).json(token);
       })
@@ -124,11 +126,13 @@ userRouter.post('/googleLogin', verifyEmail, async (req, res) => {
         const token = signingData(prevUserWithEmail);
         res.status(200).json(token);
       } else {
+        const usersCounts = await User.countDocuments();
         let user = new User({
           name,
           photo,
           email,
           socialID,
+          rank: usersCounts + 1,
         });
         const newUser = await user.save();
         const token = signingData(newUser);
