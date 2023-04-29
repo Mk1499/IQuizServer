@@ -12,7 +12,10 @@ import ErrorMessages from '../utils/errorMessages.js';
 import { codeGeneration } from '../utils/generate.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import Jwt from 'jsonwebtoken';
-import { setDeviceToken } from '../controller/user.controller.js';
+import {
+  createdQuizzes,
+  setDeviceToken,
+} from '../controller/user.controller.js';
 
 const userRouter = express.Router();
 
@@ -262,6 +265,10 @@ userRouter.post('/verifyCode', (req, res) => {
     });
 });
 
+userRouter.get('/createdQuizzes/:id', isMine, (req, res) => {
+  createdQuizzes(req, res);
+});
+
 userRouter.post('/resetPassword', authorization, (req, res) => {
   const token = req.headers.authorization;
   const userData = Jwt.decode(token);
@@ -316,10 +323,12 @@ userRouter.get('/listRank', authorization, async (req, res) => {
   const users = await User.find().sort({ rank: 1 });
   res.status(200).json(users);
 });
+
 userRouter.get('/listRankTop', authorization, async (req, res) => {
   const users = await User.find().sort({ rank: 1 }).limit(10);
   res.status(200).json(users);
 });
+
 userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {
   const users = await User.find().sort({ createdAt: -1 });
   res.status(200).json(users);

@@ -1,3 +1,4 @@
+import Quiz from '../models/quiz.js';
 import User from '../models/user.js';
 import { verifyToken } from '../utils/encryption.js';
 
@@ -33,6 +34,17 @@ export const setDeviceToken = async (req, res) => {
   )
     .then((user) => {
       res.status(200).send(user);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
+export const createdQuizzes = async (req, res) => {
+  const userID = req.params?.id;
+  Quiz.find({ user: userID })
+    .then((data) => {
+      res.status(200).json(data);
     })
     .catch((err) => {
       res.status(400).send(err);
