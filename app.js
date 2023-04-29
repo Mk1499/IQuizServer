@@ -13,6 +13,7 @@ import helmet from 'helmet';
 import userRouter from './routes/user.js';
 import feedbackRouter from './routes/feedback.js';
 import submitRouter from './routes/submit.js';
+import { updateRanks } from './controller/user.controller.js';
 
 const app = express();
 
@@ -28,6 +29,7 @@ mongoose.connection.once('open', async () => {
 });
 
 app.get('/', (req, res) => {
+  updateRanks();
   res.send('Welcome To IQuiz Server');
 });
 

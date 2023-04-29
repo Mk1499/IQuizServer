@@ -316,6 +316,10 @@ userRouter.get('/listRank', authorization, async (req, res) => {
   const users = await User.find().sort({ rank: 1 });
   res.status(200).json(users);
 });
+userRouter.get('/listRankTop', authorization, async (req, res) => {
+  const users = await User.find().sort({ rank: 1 }).limit(10);
+  res.status(200).json(users);
+});
 userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {
   const users = await User.find().sort({ createdAt: -1 });
   res.status(200).json(users);

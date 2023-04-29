@@ -32,7 +32,7 @@ submitRouter.post('/add', authorization, async (req, res) => {
         res.status(500).json(err);
       });
   } else {
-    addNewSubmit(userID, quizID, submit, score, time)
+    addNewSubmit(userID, quizID, submit, score, time, false)
       .then(() => {
         res.status(200).json(score);
       })

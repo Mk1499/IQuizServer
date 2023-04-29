@@ -3,6 +3,7 @@ import Question from '../models/question.js';
 import Category from '../models/category.js';
 import Duration from '../models/duration.js';
 import Answer from '../models/answer.js';
+import Submit from '../models/submit.js';
 import uuid from 'short-uuid';
 import { verifyToken } from '../utils/encryption.js';
 import axios from 'axios';
@@ -193,5 +194,19 @@ export async function latestQuizzes(req, res) {
     })
     .catch((err) => {
       res.status(500).send(err);
+    });
+}
+
+export async function getQuizRank(req, res, limit) {
+  const quizID = req.params.id;
+  Submit.find({ quiz: quizID })
+    .sort({ score: -1, time: 1 })
+    .populate('user')
+    .limit(limit)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
     });
 }

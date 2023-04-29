@@ -9,6 +9,7 @@ import {
   deleteQuiz,
   getQuizMetaData,
   getQuizPreData,
+  getQuizRank,
   joinByCode,
   latestQuizzes,
   listQuizzes,
@@ -90,6 +91,13 @@ quizRouter.get('/questions/:id', authorization, async (req, res) => {
         res.status(400).send(err);
       });
   }
+});
+
+quizRouter.get('/rank/:id', authorization, (req, res) => {
+  getQuizRank(req, res);
+});
+quizRouter.get('/ranklimit/:id', authorization, (req, res) => {
+  getQuizRank(req, res, 10);
 });
 
 quizRouter.post('/quizLandMaker', adminAuthorization, (req, res) => {
