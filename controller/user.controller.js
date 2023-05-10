@@ -17,7 +17,7 @@ export const setDeviceToken = async (req, res) => {
   const token = req?.headers?.authorization;
   const { deviceToken } = req.body;
   const userData = verifyToken(token);
-  console.log('Device Token : ', deviceToken);
+  // console.log('Device Token : ', deviceToken);
 
   User.updateOne(
     {

@@ -14,7 +14,7 @@ export async function addFeedback(req, res) {
 export async function listFeedbacks(req, res) {
   Feedback.find({})
     .sort({ createdAt: -1 })
-    .populate('user')
+    .populate('user quiz')
     .then((feedbacks) => {
       res.status(200).json(feedbacks);
     })

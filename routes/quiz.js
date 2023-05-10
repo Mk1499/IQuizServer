@@ -13,6 +13,7 @@ import {
   joinByCode,
   latestQuizzes,
   listQuizzes,
+  quizHaveQuestion,
 } from '../controller/quiz.controller.js';
 
 import uuid from 'short-uuid';
@@ -66,7 +67,7 @@ quizRouter.get('/questions/:id', authorization, async (req, res) => {
     quiz: id,
   });
 
-  if (prevSubmit) {
+  if (prevSubmit && false) {
     res.status(400).json({ message: ErrorMessages.prevSubmitted });
   } else {
     const takeRecord = new TakenQuiz({
@@ -126,6 +127,10 @@ quizRouter.get('/freeDummy', adminAuthorization, (req, res) => {
 
 quizRouter.get('/latest', authorization, (req, res) => {
   latestQuizzes(req, res);
+});
+
+quizRouter.get('/checkQuestion/:id', adminAuthorization, (req, res) => {
+  quizHaveQuestion(req, res);
 });
 
 quizRouter.get('/:id', adminAuthorization, (req, res) => {

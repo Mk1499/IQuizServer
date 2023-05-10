@@ -110,7 +110,6 @@ export async function addNewQuestion(req, res) {
   question
     .save()
     .then((q) => {
-      console.log('id : ', q._id);
       addQuestionToQuiz(q._id, quizID, req, res);
     })
     .catch((err) => {
@@ -148,7 +147,7 @@ export async function addQuiz(req, res) {
     status,
     user: userData?._id,
   };
-  console.log('Body : ', body);
+  // console.log('Body : ', body);
 
   const quiz = new Quiz(body);
   quiz.save((err, q) => {
@@ -203,6 +202,17 @@ export async function getQuizRank(req, res, limit) {
     .sort({ score: -1, time: 1 })
     .populate('user')
     .limit(limit)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}
+
+export async function quizHaveQuestion(req, res) {
+  const questionID = req.params.id;
+  Quiz.find({ questions: questionID })
     .then((data) => {
       res.status(200).json(data);
     })
