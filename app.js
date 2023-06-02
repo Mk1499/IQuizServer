@@ -13,6 +13,7 @@ import helmet from 'helmet';
 import userRouter from './routes/user.js';
 import feedbackRouter from './routes/feedback.js';
 import submitRouter from './routes/submit.js';
+import groupRouter from './routes/group.routes.js';
 import { updateRanks } from './controller/user.controller.js';
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/quiz', quizRouter);
 app.use('/user', userRouter);
 app.use('/feedback', feedbackRouter);
 app.use('/submit', submitRouter);
+app.use('/group', groupRouter);
 
 const options = {
   key: fs.readFileSync('./config/server.key'),
