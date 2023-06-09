@@ -14,6 +14,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 import Jwt from 'jsonwebtoken';
 import {
   createdQuizzes,
+  getProfile,
   setDeviceToken,
 } from '../controller/user.controller.js';
 
@@ -336,6 +337,10 @@ userRouter.get('/list', authorization, adminAuthorization, async (req, res) => {
 
 userRouter.post('/setDeviceToken', authorization, (req, res) => {
   setDeviceToken(req, res);
+});
+
+userRouter.get('/profile/:id', isMine, (req, res) => {
+  getProfile(req, res);
 });
 
 export default userRouter;

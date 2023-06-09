@@ -3,6 +3,7 @@ import {
   addNewSubmit,
   computeScore,
   listUserSubmits,
+  showSubmit,
 } from '../controller/submit.controller.js';
 import { updateRanks } from '../controller/user.controller.js';
 import {
@@ -60,6 +61,9 @@ submitRouter.get('/list', adminAuthorization, async (req, res) => {
 
 submitRouter.get('/list/:id', isMine, (req, res) => {
   listUserSubmits(req, res);
+});
+submitRouter.get('/:id', authorization, (req, res) => {
+  showSubmit(req, res);
 });
 
 export default submitRouter;

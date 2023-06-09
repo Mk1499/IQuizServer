@@ -61,3 +61,23 @@ export async function listUserSubmits(req, res) {
       res.status(400).send(err);
     });
 }
+
+export async function showSubmit(req, res) {
+  const { id } = req.params;
+  Submit.findById(id)
+
+    .populate({
+      path: 'submit',
+      populate: 'question',
+    })
+    .populate({
+      path: 'submit.question',
+      populate: 'answers',
+    })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+}

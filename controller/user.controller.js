@@ -1,4 +1,5 @@
 import Quiz from '../models/quiz.js';
+import Submit from '../models/submit.js';
 import User from '../models/user.js';
 import { verifyToken } from '../utils/encryption.js';
 
@@ -49,4 +50,33 @@ export const createdQuizzes = async (req, res) => {
     .catch((err) => {
       res.status(400).send(err);
     });
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userData = await User.findById(id);
+    const submittedQuizzes = await Submit.find(
+      {
+        user: id,
+      },
+      {
+        submit: 0,
+        user: 0,
+      }
+    )
+      .sort({
+        createdAt: -1,
+      })
+      .limit(5)
+      .populate('quiz');
+
+    res.status(200).json({
+      userData,
+      submittedQuizzes,
+    });
+  } catch (err) {
+    console.log('E : ', err);
+    res.status(400).send(err);
+  }
 };
