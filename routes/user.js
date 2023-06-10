@@ -339,7 +339,7 @@ userRouter.post('/setDeviceToken', authorization, (req, res) => {
   setDeviceToken(req, res);
 });
 
-userRouter.get('/profile/:id', isMine, (req, res) => {
+userRouter.get('/profile/:id', authorization, (req, res) => {
   getProfile(req, res);
 });
 
