@@ -69,7 +69,11 @@ export const getProfile = async (req, res) => {
         createdAt: -1,
       })
       .limit(5)
-      .populate('quiz');
+      .populate('quiz')
+      .populate({
+        path: 'quiz',
+        populate: 'duration',
+      });
 
     res.status(200).json({
       userData,
