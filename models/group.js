@@ -16,6 +16,10 @@ const groupSchema = new Schema(
       ref: 'User',
     },
     code: String,
+    status: {
+      type: String,
+      default: 'Public',
+    },
   },
   {
     timestamps: true,
