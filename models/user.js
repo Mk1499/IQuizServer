@@ -29,6 +29,10 @@ const userSchema = new Schema(
       default: false,
     },
     rank: Number,
+    profileLocked: {
+      type: Boolean,
+      default: false,
+    },
     submissions: {
       type: Number,
       default: 0,

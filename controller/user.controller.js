@@ -1,6 +1,7 @@
 import Quiz from '../models/quiz.js';
 import Submit from '../models/submit.js';
 import User from '../models/user.js';
+import Group from '../models/group.js';
 import { verifyToken } from '../utils/encryption.js';
 
 export const updateRanks = async () => {
@@ -75,9 +76,18 @@ export const getProfile = async (req, res) => {
         populate: 'duration',
       });
 
+    const createdQuizzes = await Quiz.find({ user: id }).limit(5);
+    const userGroups = await Group.find({
+      users: { $elemMatch: { $eq: id } },
+    })
+      .limit(5)
+      .populate('creator users');
+
     res.status(200).json({
       userData,
       submittedQuizzes,
+      createdQuizzes,
+      userGroups,
     });
   } catch (err) {
     console.log('E : ', err);
