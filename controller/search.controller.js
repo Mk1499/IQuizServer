@@ -7,7 +7,9 @@ export const generalSearch = async (req, res) => {
     const { query } = req.params;
     const users = await User.find({
       name: { $regex: new RegExp('.*' + query + '.*', 'i') },
-    }).limit(5);
+    })
+      .sort({ points: -1 })
+      .limit(5);
 
     const quizzes = await Quiz.find({
       status: 'Public',
@@ -34,6 +36,7 @@ export const usersSearch = async (req, res) => {
   User.find({
     name: { $regex: new RegExp('.*' + query + '.*', 'i') },
   })
+    .sort({ points: -1 })
     .then((data) => {
       res.status(200).json(data);
     })
