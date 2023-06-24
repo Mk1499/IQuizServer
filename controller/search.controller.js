@@ -28,3 +28,44 @@ export const generalSearch = async (req, res) => {
     res.status(400).send(err);
   }
 };
+
+export const usersSearch = async (req, res) => {
+  const { query } = req.params;
+  User.find({
+    name: { $regex: new RegExp('.*' + query + '.*', 'i') },
+  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
+export const quizzesSearch = async (req, res) => {
+  const { query } = req.params;
+  Quiz.find({
+    status: 'Public',
+    name: { $regex: new RegExp('.*' + query + '.*', 'i') },
+  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
+export const groupSearch = async (req, res) => {
+  const { query } = req.params;
+  Group.find({
+    status: 'Public',
+    title: { $regex: new RegExp('.*' + query + '.*', 'i') },
+  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
