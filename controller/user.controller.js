@@ -94,3 +94,43 @@ export const getProfile = async (req, res) => {
     res.status(400).send(err);
   }
 };
+
+export const lockProfile = async (req, res) => {
+  const token = req?.headers?.authorization;
+  const userData = verifyToken(token);
+  const id = userData._id;
+  User.updateOne(
+    { _id: id },
+    {
+      $set: {
+        profileLocked: true,
+      },
+    }
+  )
+    .then(() => {
+      res.status(200).json({ message: 'ProfileLockedSuccessfully' });
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
+export const unlockProfile = async (req, res) => {
+  const token = req?.headers?.authorization;
+  const userData = verifyToken(token);
+  const id = userData._id;
+  User.updateOne(
+    { _id: id },
+    {
+      $set: {
+        profileLocked: false,
+      },
+    }
+  )
+    .then(() => {
+      res.status(200).json({ message: 'ProfileUnLockedSuccessfully' });
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};

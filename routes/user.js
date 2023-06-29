@@ -15,7 +15,9 @@ import Jwt from 'jsonwebtoken';
 import {
   createdQuizzes,
   getProfile,
+  lockProfile,
   setDeviceToken,
+  unlockProfile,
 } from '../controller/user.controller.js';
 
 const userRouter = express.Router();
@@ -341,6 +343,13 @@ userRouter.post('/setDeviceToken', authorization, (req, res) => {
 
 userRouter.get('/profile/:id', authorization, (req, res) => {
   getProfile(req, res);
+});
+
+userRouter.post('/profile/lock', isMine, (req, res) => {
+  lockProfile(req, res);
+});
+userRouter.post('/profile/unlock', isMine, (req, res) => {
+  unlockProfile(req, res);
 });
 
 export default userRouter;
