@@ -293,12 +293,12 @@ userRouter.post('/resetPassword', authorization, (req, res) => {
 });
 
 userRouter.put('/update', authorization, (req, res) => {
-  const { name, photo } = req.body;
+  const { name, photo, quote, profileLocked } = req.body;
   const token = req.headers.authorization;
   const user = verifyToken(token);
   User.findByIdAndUpdate(
     { _id: user._id },
-    { $set: { name, photo } },
+    { $set: { name, photo, quote, profileLocked } },
     { new: true }
   )
     .then((data) => {
