@@ -3,6 +3,12 @@ import Submit from '../models/submit.js';
 import User from '../models/user.js';
 import Group from '../models/group.js';
 import { verifyToken } from '../utils/encryption.js';
+import {
+  getUserFriends,
+  isFriends,
+  listUserFriends,
+} from './friendship.controller.js';
+import { Types } from 'mongoose';
 
 export const updateRanks = async () => {
   const users = await User.find().sort({ points: -1 });
@@ -56,7 +62,18 @@ export const createdQuizzes = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const userData = await User.findById(id);
+    const userData = await User.findById(id, { password: 0 });
+    const token = req.headers.authorization;
+    const senderUser = verifyToken(token);
+
+    let friends = [];
+    const friendship = await isFriends(
+      new Types.ObjectId(id),
+      new Types.ObjectId(senderUser._id)
+    );
+    if (!userData.profileLocked) {
+      friends = await getUserFriends(userData._id);
+    }
     const submittedQuizzes = await Submit.find(
       {
         user: id,
@@ -88,6 +105,8 @@ export const getProfile = async (req, res) => {
       submittedQuizzes,
       createdQuizzes,
       userGroups,
+      friends,
+      friendship,
     });
   } catch (err) {
     console.log('E : ', err);
