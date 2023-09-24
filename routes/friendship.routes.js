@@ -5,6 +5,7 @@ import {
   getUserPendingFriends,
   listAllFriendShips,
   listUserFriends,
+  listUserFriendShips,
   removeFriendRequest,
   sendFriendRequest,
 } from '../controller/friendship.controller.js';
@@ -20,10 +21,13 @@ friendshipRouter.post('/accept', authorization, (req, res) => {
   acceptFriendRequest(req, res);
 });
 
-friendshipRouter.delete('/remove', authorization, (req, res) => {
+friendshipRouter.post('/remove', authorization, (req, res) => {
   removeFriendRequest(req, res);
 });
 
+friendshipRouter.get('/listFriendships/:userID', authorization, (req, res) => {
+  listUserFriendShips(req, res);
+});
 friendshipRouter.get('/list/:userID', authorization, (req, res) => {
   listUserFriends(req, res);
 });

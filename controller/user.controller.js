@@ -3,11 +3,7 @@ import Submit from '../models/submit.js';
 import User from '../models/user.js';
 import Group from '../models/group.js';
 import { verifyToken } from '../utils/encryption.js';
-import {
-  getUserFriends,
-  isFriends,
-  listUserFriends,
-} from './friendship.controller.js';
+import { getUserFriends, isFriends } from './friendship.controller.js';
 import { Types } from 'mongoose';
 
 export const updateRanks = async () => {
@@ -74,6 +70,57 @@ export const getProfile = async (req, res) => {
     if (!userData.profileLocked) {
       friends = await getUserFriends(userData._id);
     }
+    const submittedQuizzes = await Submit.find(
+      {
+        user: id,
+      },
+      {
+        submit: 0,
+        user: 0,
+      }
+    )
+      .sort({
+        createdAt: -1,
+      })
+      .limit(5)
+      .populate('quiz')
+      .populate({
+        path: 'quiz',
+        populate: 'duration',
+      });
+
+    const createdQuizzes = await Quiz.find({ user: id }).limit(5);
+    const userGroups = await Group.find({
+      users: { $elemMatch: { $eq: id } },
+    })
+      .limit(5)
+      .populate('creator users');
+
+    res.status(200).json({
+      userData,
+      submittedQuizzes,
+      createdQuizzes,
+      userGroups,
+      friends,
+      friendship,
+    });
+  } catch (err) {
+    console.log('E : ', err);
+    res.status(400).send(err);
+  }
+};
+export const getMyProfile = async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    const senderUser = verifyToken(token);
+    const id = senderUser?._id;
+    const userData = await User.findById(id, { password: 0 });
+    let friends = [];
+    const friendship = await isFriends(
+      new Types.ObjectId(id),
+      new Types.ObjectId(senderUser._id)
+    );
+    friends = await getUserFriends(userData._id);
     const submittedQuizzes = await Submit.find(
       {
         user: id,

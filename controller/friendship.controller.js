@@ -1,5 +1,7 @@
+import { Types } from 'mongoose';
 import Friendship from '../models/friendship.js';
 import { verifyToken } from '../utils/encryption.js';
+import screenNames from '../utils/screenNames.js';
 import { createNotification } from './notification.controller.js';
 
 export async function sendFriendRequest(req, res) {
@@ -18,7 +20,7 @@ export async function sendFriendRequest(req, res) {
 
   friendRequest
     .save()
-    .then(() => {
+    .then((data) => {
       try {
         createNotification(
           userID,
@@ -26,13 +28,14 @@ export async function sendFriendRequest(req, res) {
           body,
           type,
           userPushID,
-          userSenderPhoto
+          userSenderPhoto,
+          screenNames.friendRequests
         );
       } catch (err) {
         console.log('ERR : ', err);
         throw err;
       }
-      res.status(200).json({ message: 'Friend Request Sent' });
+      res.status(200).json({ message: 'Friend Request Sent', data });
     })
     .catch((err) => {
       res.status(400).send(err);
@@ -78,9 +81,9 @@ export async function removeFriendRequest(req, res) {
     });
 }
 
-export async function listUserFriends(req, res) {
+export async function listUserFriendShips(req, res) {
   const { userID } = req.params;
-  Friendship.find({ users: { $in: [userID] } })
+  Friendship.find({ users: { $in: [userID] } }, { createdAt: 1 })
     .populate('users')
     .then((data) => {
       //   const friend = data.users.find((item) => item._id !== userID);
@@ -91,13 +94,27 @@ export async function listUserFriends(req, res) {
     });
 }
 
+export async function listUserFriends(req, res) {
+  const { userID } = req.params;
+  let friends = [];
+  try {
+    friends = await getUserFriends(userID);
+    res.status(200).send(friends);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+}
+
 export async function getUserFriends(userID) {
+  const id = new Types.ObjectId(userID);
   const data = await Friendship.find({
-    users: userID,
+    users: id,
     status: 'valid',
   }).populate('users');
   const friends = data.map((item) => {
-    const friend = item.users.find((u) => u._id !== userID);
+    const friend = item.users.find((u) => {
+      return !u._id.equals(id);
+    });
     return friend;
   });
   return friends;
@@ -106,10 +123,12 @@ export async function getUserFriends(userID) {
 export async function getUserPendingFriends(req, res) {
   const token = req.headers.authorization;
   const user = verifyToken(token);
+  console.log('Called');
   Friendship.find({
     to: user?._id,
     status: 'pending',
   })
+    .sort({ createdAt: -1 })
     .populate('from')
     .then((data) => {
       res.status(200).json(data);

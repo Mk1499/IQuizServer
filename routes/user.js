@@ -14,6 +14,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 import Jwt from 'jsonwebtoken';
 import {
   createdQuizzes,
+  getMyProfile,
   getProfile,
   lockProfile,
   setDeviceToken,
@@ -343,6 +344,10 @@ userRouter.post('/setDeviceToken', authorization, (req, res) => {
 
 userRouter.get('/profile/:id', authorization, (req, res) => {
   getProfile(req, res);
+});
+
+userRouter.get('/myprofile', authorization, (req, res) => {
+  getMyProfile(req, res);
 });
 
 userRouter.post('/profile/lock', isMine, (req, res) => {

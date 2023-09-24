@@ -7,10 +7,12 @@ export async function createNotification(
   body,
   type,
   pushID,
-  photo
+  photo,
+  screenName,
+  params
 ) {
   if (pushID) {
-    sendNotification(pushID, title, body, type);
+    sendNotification(pushID, title, body, type, screenName, params);
   }
   const notification = new Notification({
     user: userID,

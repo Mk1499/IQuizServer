@@ -59,7 +59,7 @@ submitRouter.get('/list', adminAuthorization, async (req, res) => {
     });
 });
 
-submitRouter.get('/list/:id', isMine, (req, res) => {
+submitRouter.get('/list/:id', authorization, (req, res) => {
   listUserSubmits(req, res);
 });
 submitRouter.get('/:id', authorization, (req, res) => {

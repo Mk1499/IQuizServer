@@ -2,7 +2,14 @@ import axios from 'axios';
 
 const pushKey = process.env.FCMKey;
 
-export async function sendNotification(pushID, title, body, type) {
+export async function sendNotification(
+  pushID,
+  title,
+  body,
+  type,
+  screenName,
+  params
+) {
   const headers = {
     Authorization: `key=${pushKey}`,
   };
@@ -15,6 +22,9 @@ export async function sendNotification(pushID, title, body, type) {
     },
     data: {
       type,
+      navigation: screenName ? true : false,
+      screenName,
+      params,
     },
   };
 
