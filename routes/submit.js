@@ -26,8 +26,14 @@ submitRouter.post('/add', authorization, async (req, res) => {
       .then(async () => {
         updateRanks();
 
-        await addNewSubmit(userID, quizID, submit, score, time);
-        res.status(200).json(score);
+        const submitData = await addNewSubmit(
+          userID,
+          quizID,
+          submit,
+          score,
+          time
+        );
+        res.status(200).json({ score, _id: submitData?._id });
       })
       .catch((err) => {
         res.status(500).json(err);

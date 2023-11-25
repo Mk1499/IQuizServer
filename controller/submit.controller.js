@@ -35,6 +35,7 @@ export async function addNewSubmit(userID, quizID, submittion, score, time) {
   }).save();
   await Quiz.updateOne({ _id: quizID }, { $inc: { submissions: 1 } });
   await User.updateOne({ _id: userID }, { $inc: { submissions: 1 } });
+  return newSubmittion;
 }
 
 export async function listUserSubmits(req, res) {
