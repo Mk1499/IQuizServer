@@ -26,6 +26,7 @@
     "nodemailer": "^6.9.1",
     "nodemailer-smtp-transport": "^2.7.4",
     "short-uuid": "^4.2.2",
+    "socket.io": "^4.7.2",
     "uuid": "^9.0.0"
   }
 }

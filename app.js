@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import https from 'https';
 import fs from 'fs';
 import cors from 'cors';
+import { Server } from 'socket.io';
 import AnswersRouter from './routes/answer.js';
 import QuestionRouter from './routes/questions.js';
 import env from 'dotenv';
@@ -16,10 +17,19 @@ import submitRouter from './routes/submit.js';
 import groupRouter from './routes/group.routes.js';
 import searchRouter from './routes/search.routes.js';
 import friendshipRouter from './routes/friendship.routes.js';
-
+import http from 'http';
 import { updateRanks } from './controller/user.controller.js';
+import { onConnection } from './middlewares/socket.js';
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
+io.listen(4040)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,6 +73,10 @@ const port = process.env.PORT || 9000;
 // https.createServer(options, app).listen(port, () => {
 //   console.log(`HTTPS server started on port : `, port);
 // });
+
+io.on('connection', (socket) => {
+  onConnection(socket);
+})
 
 app.listen(port, () => {
   console.log(' server starts on port : ', port);
