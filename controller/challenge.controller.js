@@ -37,8 +37,16 @@ const userJoinsChallenge = async (socket, userId, challengeId) => {
       $addToSet: {
         participants: userId,
       },
+    },
+    {
+      new: true,
     }
-  ).populate('participants');
+  )
+    .populate('participants questions')
+    .populate({
+      path: 'questions',
+      populate: 'answers',
+    });
   console.log('challengeData : ', challengeData);
   io.to(roomName).emit(socketEvents.compeleteChallenge, challengeData);
 };
