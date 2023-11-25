@@ -24,12 +24,12 @@ import { onConnection } from './middlewares/socket.js';
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000"
-  }
+    origin: 'http://localhost:3000',
+  },
 });
-io.listen(4040)
+io.listen(4040);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -76,7 +76,7 @@ const port = process.env.PORT || 9000;
 
 io.on('connection', (socket) => {
   onConnection(socket);
-})
+});
 
 app.listen(port, () => {
   console.log(' server starts on port : ', port);

@@ -33,3 +33,19 @@ export async function setRightAnswer(req, res) {
       res.status(400).send(err);
     });
 }
+
+export const getRondomQuestions = async () => {
+  try {
+    const randomQuestions = await Question.aggregate([
+      { $sample: { size: 10 } }, // Get a random sample of 10 questions
+      { $project: { _id: 1 } }, // Project only the _id field
+    ]);
+
+    const questionIds = randomQuestions.map((question) => question._id);
+
+    return questionIds;
+  } catch (error) {
+    console.error('Error fetching random questions:', error);
+    throw error;
+  }
+};

@@ -67,7 +67,7 @@ quizRouter.get('/questions/:id', authorization, async (req, res) => {
     quiz: id,
   });
 
-  if (prevSubmit) {
+  if (prevSubmit && false) {
     res.status(400).json({ message: ErrorMessages.prevSubmitted });
   } else {
     const takeRecord = new TakenQuiz({
